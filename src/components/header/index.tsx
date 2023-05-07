@@ -1,4 +1,4 @@
-import ConnectWallet from "./ConnectWallet";
+import ConnectButton from "./ConnectButton";
 import Logo from "./Logo";
 import Menu from "./Menu";
 
@@ -8,7 +8,7 @@ export default function Header() {
       <nav className="mb-[-1px] h-full flex items-center w-full max-w-screen-xl px-4 mx-auto">
         <Logo />
         <Menu />
-        <ConnectWallet />
+        <ConnectButton />
       </nav>
     </header >
   )
