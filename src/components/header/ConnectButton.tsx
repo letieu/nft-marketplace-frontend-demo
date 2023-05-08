@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/auth-context";
 
 export default function ConnectButton() {
   const { account } = useWeb3React();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   if (account) {
     return (
@@ -30,6 +30,10 @@ export default function ConnectButton() {
             <Popover.Panel className="absolute w-72 right-0">
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="relative bg-white p-7 lg:grid-cols-2">
+                  <div className="flex items-center gap-2 text-blue-500">
+                    Username: {getEllipsisTxt(user?.username)}
+                  </div>
+
                   <Link to="/"> Profile </Link>
                   <div role="button" onClick={logout} > Logout </div>
                 </div>
