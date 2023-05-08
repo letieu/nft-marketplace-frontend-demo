@@ -2,14 +2,14 @@ import { useWeb3React } from "@web3-react/core";
 import { Link } from "react-router-dom";
 import Blockies from 'react-blockies';
 import { getEllipsisTxt } from "../../helpers/format";
-import { Menu, Popover } from "@headlessui/react";
+import { Popover } from "@headlessui/react";
 import { useAuth } from "../../contexts/auth-context";
 
 export default function ConnectButton() {
   const { account } = useWeb3React();
   const { logout, user } = useAuth();
 
-  if (account) {
+  if (user) {
     return (
       <div className="justify-end w-full gap-2 flex">
         <div className="flex items-center gap-2">

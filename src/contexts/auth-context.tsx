@@ -41,6 +41,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
       localStorage.setItem('token', authData.access_token)
       configAxios()
+
+      await fetchMe()
     } catch (error) {
       console.log(error)
     }

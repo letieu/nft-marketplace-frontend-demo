@@ -1,20 +1,8 @@
 import type { AddEthereumChainParameter } from '@web3-react/types'
 
-const ETH: AddEthereumChainParameter['nativeCurrency'] = {
-  name: 'Ether',
-  symbol: 'ETH',
-  decimals: 18,
-}
-
 const MATIC: AddEthereumChainParameter['nativeCurrency'] = {
   name: 'Matic',
   symbol: 'MATIC',
-  decimals: 18,
-}
-
-const CELO: AddEthereumChainParameter['nativeCurrency'] = {
-  name: 'Celo',
-  symbol: 'CELO',
   decimals: 18,
 }
 

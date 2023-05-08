@@ -4,8 +4,8 @@ import { walletConnect } from "../connect-wallet/connectors/wallet-connect";
 import { useAuth } from "../contexts/auth-context";
 
 export default function ConnectSelect() {
-  const { isActive, account, provider, chainId } = useWeb3React();
-  const { login } = useAuth();
+  const { account, chainId } = useWeb3React();
+  const { login, user } = useAuth();
 
   async function connectByMetamask() {
     await metaMask.activate();
@@ -17,7 +17,7 @@ export default function ConnectSelect() {
     await login();
   }
 
-  if (isActive && account && provider) {
+  if (user) {
     return (
       <div className="flex justify-center">
         <div className="flex flex-col justify-center items-center">
