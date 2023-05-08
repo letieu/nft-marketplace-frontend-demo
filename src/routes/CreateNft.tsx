@@ -56,7 +56,7 @@ export default function CreateNft() {
       const ids = await getMintedIds(tx.hash)
       console.log("ids", ids)
 
-      await saveNft(nft.tokenAddress, ids[0])
+      await saveNft(nft.tokenAddress, ids[0], tx.hash)
       alert("NFT created successfully")
     } catch (err) {
       console.log(err)

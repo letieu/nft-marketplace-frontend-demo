@@ -18,8 +18,8 @@ export type Nft = {
   metadata: NftMetadata;
 }
 
-export function saveNft(tokenAddress: string, tokenId: string) {
-  return axios.post('/nfts', { tokenAddress, tokenId })
+export function saveNft(tokenAddress: string, tokenId: string, txHash: string) {
+  return axios.post('/nfts', { tokenAddress, tokenId, txHash })
 }
 
 export function getOwnedNfts(ownerAddress: string) {
