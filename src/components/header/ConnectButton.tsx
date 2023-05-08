@@ -3,17 +3,11 @@ import { Link } from "react-router-dom";
 import Blockies from 'react-blockies';
 import { getEllipsisTxt } from "../../helpers/format";
 import { Menu, Popover } from "@headlessui/react";
+import { useAuth } from "../../contexts/auth-context";
 
 export default function ConnectButton() {
-  const { account, connector } = useWeb3React();
-
-  function logout() {
-    if (connector?.deactivate) {
-      void connector.deactivate()
-    } else {
-      void connector.resetState()
-    }
-  }
+  const { account } = useWeb3React();
+  const { logout } = useAuth();
 
   if (account) {
     return (

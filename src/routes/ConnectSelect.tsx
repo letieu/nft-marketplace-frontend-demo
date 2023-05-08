@@ -1,16 +1,20 @@
 import { useWeb3React } from "@web3-react/core";
 import { metaMask } from "../connect-wallet/connectors/metamask";
 import { walletConnect } from "../connect-wallet/connectors/wallet-connect";
+import { useAuth } from "../contexts/auth-context";
 
 export default function ConnectSelect() {
   const { isActive, account, provider, chainId } = useWeb3React();
+  const { login } = useAuth();
 
   async function connectByMetamask() {
     await metaMask.activate();
+    await login();
   }
 
   async function connectByWalletConnect() {
     await walletConnect.activate();
+    await login();
   }
 
   if (isActive && account && provider) {
