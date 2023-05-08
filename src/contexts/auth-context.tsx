@@ -18,7 +18,7 @@ export const AuthContext = React.createContext<Auth>({
 
 export function AuthProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null)
-  const { connector, provider } = useWeb3React()
+  const { connector, provider, chainId } = useWeb3React()
 
   function logout() {
     if (connector?.deactivate) {
@@ -28,10 +28,10 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     }
 
     localStorage.removeItem('token')
+    setUser(null)
   }
 
   async function login() {
-
     try {
       const signer = provider?.getSigner()
       const userAddresses = await signer?.getAddress()
@@ -57,6 +57,11 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     }
   }
 
+  function isValidChainId() {
+    if (!chainId) return false
+    return chainId === +import.meta.env.VITE_CHAIN_ID as number
+  }
+
   async function reconnect() {
     await connector.connectEagerly?.()
     await fetchMe()
@@ -66,6 +71,13 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     configAxios()
     reconnect()
   }, [])
+
+  useEffect(() => {
+    if (user && chainId && !isValidChainId()) {
+      alert(`Please change your network to ${import.meta.env.VITE_CHAIN_ID}`)
+      logout()
+    }
+  }, [chainId, user])
 
   return (
     <AuthContext.Provider value={{
