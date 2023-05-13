@@ -1,7 +1,7 @@
-import { useWeb3React } from '@web3-react/core'
 import React, { useEffect, useState } from 'react'
 import { configAxios } from '../services/axios'
 import { User, getNonce, getToken, me } from '../services/auth'
+import { useEthereum } from './ethereum-context'
 
 export type Auth = {
   user: User | null
@@ -11,29 +11,28 @@ export type Auth = {
 
 export const AuthContext = React.createContext<Auth>({
   user: null,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  logout: () => { },
+  logout: () => Promise.resolve(),
   login: () => Promise.resolve(),
 })
 
+export function useAuth() {
+  return React.useContext(AuthContext)
+}
+
 export function AuthProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null)
-  const { connector, provider, chainId } = useWeb3React()
+  const { disconnect, connect, chainId, account } = useEthereum()
 
-  function logout() {
-    if (connector?.deactivate) {
-      void connector.deactivate()
-    } else {
-      void connector.resetState()
-    }
-
+  async function logout() {
+    await disconnect()
     localStorage.removeItem('token')
     setUser(null)
   }
 
   async function login() {
     try {
-      const signer = provider?.getSigner()
+      const newProvider = await connect()
+      const signer = await newProvider?.getSigner()
       const userAddresses = await signer?.getAddress()
       const { data } = await getNonce(userAddresses as string)
       const sign = await signer?.signMessage(data)
@@ -59,12 +58,18 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   function isValidChainId() {
     if (!chainId) return false
-    return chainId === +import.meta.env.VITE_CHAIN_ID as number
+    return +chainId === +import.meta.env.VITE_CHAIN_ID as number
   }
 
   async function reconnect() {
-    await connector.connectEagerly?.()
-    await fetchMe()
+    try {
+      const provider = await connect()
+      if (provider) {
+        fetchMe()
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -79,6 +84,14 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     }
   }, [chainId, user])
 
+  useEffect(() => {
+    if (account && user) { // if connected
+      if (account !== user.address) { // but not the same address
+        logout()
+      }
+    }
+  }, [account, user])
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -86,8 +99,4 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       login,
     }}>{children}</AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  return React.useContext(AuthContext)
 }

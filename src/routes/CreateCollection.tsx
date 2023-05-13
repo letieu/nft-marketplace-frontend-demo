@@ -1,11 +1,11 @@
-import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
 import { deployCollection } from "../contracts/collection"
 import { createCollection } from "../services/collection"
 import { useAuth } from "../contexts/auth-context"
+import { useEthereum } from "../contexts/ethereum-context"
 
 export default function CreateCollection() {
-  const { provider } = useWeb3React()
+  const { provider } = useEthereum()
   const { user } = useAuth()
   const [collection, setCollection] = useState({ name: "", description: "", symbol: "" })
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ export default function CreateCollection() {
 
     setLoading(true)
     try {
-      const contract = await deployCollection(provider.getSigner(), {
+      const contract = await deployCollection(await provider.getSigner(), {
         name: collection.name,
         symbol: collection.symbol,
       })

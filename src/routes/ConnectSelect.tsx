@@ -1,20 +1,16 @@
-import { useWeb3React } from "@web3-react/core";
-import { metaMask } from "../connect-wallet/connectors/metamask";
-import { walletConnect } from "../connect-wallet/connectors/wallet-connect";
 import { useAuth } from "../contexts/auth-context";
+import { useEthereum } from "../contexts/ethereum-context";
 
 export default function ConnectSelect() {
-  const { account, chainId } = useWeb3React();
+  const { account, chainId } = useEthereum();
   const { login, user } = useAuth();
 
   async function connectByMetamask() {
-    await metaMask.activate();
     await login();
   }
 
   async function connectByWalletConnect() {
-    await walletConnect.activate();
-    await login();
+    // TODO: implement
   }
 
   if (user) {

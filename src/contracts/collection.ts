@@ -1,4 +1,4 @@
-import { ethers } from "ethers"
+import { Signer, ethers } from "ethers"
 import abi from "./abi/contracts/collection/Collection.sol/Collection.json"
 import { bytecode } from "./bytecode/collection.json"
 
@@ -8,7 +8,7 @@ export type DeployCollectionParams = {
 }
 
 export async function deployCollection(
-  signer: any,
+  signer: Signer,
   params: DeployCollectionParams,
 ) {
   const Collection = new ethers.ContractFactory(
@@ -26,7 +26,7 @@ export async function deployCollection(
 }
 
 export async function mintNft(
-  signer: any,
+  signer: Signer,
   tokenAddress: string,
   tokenURI: string,
   toAddress: string,

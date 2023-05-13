@@ -3,10 +3,10 @@ import { getEllipsisTxt } from '../helpers/format';
 import { Link } from 'react-router-dom';
 import { Collection, getOwnedCollections } from '../services/collection';
 import { useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useEthereum } from '../contexts/ethereum-context';
 
 export function MyCollections() {
-  const { account } = useWeb3React();
+  const { account } = useEthereum();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
 

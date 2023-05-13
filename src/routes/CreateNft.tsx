@@ -1,13 +1,13 @@
-import { useWeb3React } from "@web3-react/core"
 import { useEffect, useState } from "react"
 import { useAuth } from "../contexts/auth-context"
 import { Collection, getOwnedCollections } from "../services/collection"
 import { uploadNftToIPFS } from "../helpers/ipfs"
-import { getMintedIds, getTransferLogs, mintNft } from "../contracts/collection"
+import { getMintedIds, mintNft } from "../contracts/collection"
 import { saveNft } from "../services/nft"
+import { useEthereum } from "../contexts/ethereum-context"
 
 export default function CreateNft() {
-  const { provider, account } = useWeb3React()
+  const { provider, account } = useEthereum()
   const { user } = useAuth()
 
   const [nft, setNft] = useState({ name: "", description: "", tokenAddress: "" })
@@ -148,7 +148,7 @@ export default function CreateNft() {
 }
 
 const useCollections = () => {
-  const { account } = useWeb3React()
+  const { account } = useEthereum()
   const [collections, setCollections] = useState<Collection[]>([])
   const [loading, setLoading] = useState(false)
 
