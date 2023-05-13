@@ -2,28 +2,42 @@ import { useState } from "react";
 import { getEllipsisTxt } from "../../helpers/format";
 import { Nft } from "../../services/nft";
 import { ensureApproved } from "../../contracts/erc721";
-import { ethers } from "ethers";
 import { useEthereum } from "../../contexts/ethereum-context";
 import { createListSignature } from "../../contracts/market";
+import { saveSale } from "../../services/sale";
 
 const marketAddress = import.meta.env.VITE_MARKET_ADDRESS as string
 
 export default function MyNft({ nft }: { nft: Nft }) {
   const [price, setPrice] = useState<number>(0)
-  const { provider } = useEthereum()
+  const { provider, account } = useEthereum()
 
   async function handleSellClick(nft: Nft) {
     if (!provider) return
+    if (!account) return
+
     try {
       const signer = await provider.getSigner()
+
+      // approve market contract to transfer nft later
       await ensureApproved(signer, nft.tokenAddress, marketAddress)
+
+      // create signature for list and save sale to db
       const signature = await createListSignature(signer, {
         tokenAddress: nft.tokenAddress,
         tokenId: +nft.tokenId,
         price: price,
         seller: nft.ownerAddress,
       })
-      alert(signature)
+      await saveSale({
+        tokenAddress: nft.tokenAddress,
+        tokenId: nft.tokenId,
+        price: price,
+        sellerAddress: account,
+        signature,
+      })
+
+      alert("Sale created")
     } catch (error) {
       console.log(error)
       return
