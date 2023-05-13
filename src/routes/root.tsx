@@ -5,6 +5,7 @@ import { MyCollections } from "./MyCollections";
 import CreateCollection from "./CreateCollection";
 import MyNfts from "./MyNfts";
 import CreateNft from "./CreateNft";
+import Market from "./Market";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "create-nft",
         element: <CreateNft />,
+      },
+      {
+        path: "/",
+        element: <Market />
       }
     ]
   },

@@ -9,10 +9,10 @@ import { saveSale } from "../../services/sale";
 const marketAddress = import.meta.env.VITE_MARKET_ADDRESS as string
 
 export default function MyNft({ nft }: { nft: Nft }) {
-  const [price, setPrice] = useState<number>(0)
+  const [price, setPrice] = useState<string>("")
   const { provider, account } = useEthereum()
 
-  async function handleSellClick(nft: Nft) {
+  async function handleSellClick() {
     if (!provider) return
     if (!account) return
 
@@ -26,13 +26,13 @@ export default function MyNft({ nft }: { nft: Nft }) {
       const signature = await createListSignature(signer, {
         tokenAddress: nft.tokenAddress,
         tokenId: +nft.tokenId,
-        price: price,
+        price: +price,
         seller: nft.ownerAddress,
       })
       await saveSale({
         tokenAddress: nft.tokenAddress,
         tokenId: nft.tokenId,
-        price: price,
+        price: +price,
         sellerAddress: account,
         signature,
       })
@@ -61,8 +61,11 @@ export default function MyNft({ nft }: { nft: Nft }) {
           Token Address: {getEllipsisTxt(nft.tokenAddress)} <br />
         </p>
         <div className="flex justify-between">
-          <input type="number" className="border border-gray-300 rounded-md w-1/2 p-1 text-sm text-gray-800" placeholder="Price" />
-          <button className="rounded-md py-1 text-sm text-blue-300 hover:text-gray-800" onClick={() => handleSellClick(nft)}>Sell</button>
+          <input type="number" className="border border-gray-300 rounded-md w-1/2 p-1 text-sm text-gray-800" placeholder="Price"
+            onChange={(e) => setPrice(e.target.value)}
+            value={price}
+          />
+          <button className="rounded-md py-1 text-sm text-blue-300 hover:text-gray-800" onClick={() => handleSellClick()}>Sell</button>
         </div>
       </div>
     </div>

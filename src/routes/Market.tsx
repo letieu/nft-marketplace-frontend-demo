@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Nft, getOwnedNfts } from '../services/nft';
 import { useEthereum } from '../contexts/ethereum-context';
-import MyNftCard from '../components/nft-cards/MyNftCard';
+import { Sale, getSales } from '../services/sale';
+import SaleCard from '../components/nft-cards/SaleCard';
 
-export default function MyNfts() {
+export default function Market() {
   const { account } = useEthereum();
-  const [nfts, setNfts] = useState<Nft[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // add loading state
+  const [sales, setSales] = useState<Sale[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function fetchNfts() {
+    async function fetchSales() {
       if (!account) return;
       try {
-        const { data } = await getOwnedNfts(account);
-        setNfts(data);
+        const { data } = await getSales();
+        setSales(data);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false); // set loading state to false
       }
     }
-    fetchNfts();
+    fetchSales();
   }, [account]);
 
   return (
@@ -31,15 +31,15 @@ export default function MyNfts() {
           Create NFT
         </Link>
       </div>
-      {loading ? ( // check for loading state
+      {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="grid grid-cols-5 gap-4">
-          {nfts.map(nft =>
-            <MyNftCard nft={nft} key={nft._id} />
+          {sales.map(sale =>
+            <SaleCard sale={sale} key={sale._id} />
           )}
         </div>
       )}
     </>
-  );
+  )
 }
